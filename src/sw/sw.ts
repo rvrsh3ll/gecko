@@ -18,7 +18,7 @@ browser.storage.local.get("settings").then((items) => {
 
 browser.storage.local.onChanged.addListener((changes) => {
   if (changes.findings) {
-    const newLength = changes.findings.newValue.length;
+    const newLength = (changes.findings.newValue as any[]).length;
 
     if (newLength) {
       browser.action.setBadgeText({
@@ -42,7 +42,7 @@ browser.storage.local.onChanged.addListener((changes) => {
 function storeFinding(finding: Finding) {
   storageMutex.runExclusive(async () => {
     const items = await browser.storage.local.get("findings");
-    const findings = items.findings || [];
+    const findings: Finding[] = Array.isArray(items.findings) ? items.findings : [];
     findings.push(finding);
     await browser.storage.local.set({ findings });
   });
@@ -67,30 +67,21 @@ browser.webNavigation.onCommitted.addListener((details) => {
 
 updateCurrentTab();
 
-// function contentLog(message: any) {
-//   chrome.scripting.executeScript({
-//     target: { tabId: currentTab?.id || 0 },
-//     func: (m) => {
-//       console.log(m);
-//     },
-//     args: [message],
-//   });
-// }
-
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
     if (!details.initiator && !details.originUrl) {
-      return;
+      return undefined;
     }
 
     if (currentTab && currentTab.url) {
       if (details.url === currentTab.url) {
-        return;
+        return undefined;
       }
       const sources = urlToSources(currentTab.url);
       const findings = generateFindings(details.url, sources);
       findings.forEach((finding) => storeFinding(finding)); // TODO: store multiple findings at once
     }
+    return undefined;
   },
   { urls: ["<all_urls>"] },
 );
