@@ -4,19 +4,20 @@ import Toggle from "../components/ui/toggle";
 import "../tailwind/styles.css";
 import { defaultSettings } from "../shared/constants";
 import InfoAlert from "../components/ui/info-alert";
+import browser from "webextension-polyfill";
 
 export default function Popup() {
   const [settings, setSettings] = React.useState(defaultSettings);
   const minLenClasses = settings.matching.partial ? "" : "hidden";
 
   useEffect(() => {
-    chrome.storage.local.get("settings", (items) => {
+    browser.storage.local.get("settings").then((items) => {
       setSettings(items.settings);
     });
   }, []);
 
   useEffect(() => {
-    chrome.storage.local.set({ settings });
+    browser.storage.local.set({ settings });
   }, [settings]);
 
   return (

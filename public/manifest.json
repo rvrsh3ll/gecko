@@ -9,7 +9,7 @@
   "devtools_page": "devtools.html",
   "background": {
     "service_worker": "js/sw.js",
-    "type": "module"
+    "scripts": ["js/sw.js"]
   },
   "permissions": [
     "activeTab",

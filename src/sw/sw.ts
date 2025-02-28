@@ -1,33 +1,34 @@
+import browser from "webextension-polyfill";
 import { Mutex } from "async-mutex";
 import { Source, SourceType, Finding, Settings } from "../shared/types";
 import { defaultSettings } from "../shared/constants";
 
-let currentTab: chrome.tabs.Tab | null = null;
+let currentTab: browser.Tabs.Tab | null = null;
 let storageMutex = new Mutex();
 
 const currentSettings: Settings = defaultSettings;
 
-chrome.storage.local.get("settings", (items) => {
+browser.storage.local.get("settings").then((items) => {
   if (!items.settings) {
-    chrome.storage.local.set({ settings: defaultSettings });
+    browser.storage.local.set({ settings: defaultSettings });
   } else {
     Object.assign(currentSettings, items.settings);
   }
 });
 
-chrome.storage.local.onChanged.addListener((changes) => {
+browser.storage.local.onChanged.addListener((changes) => {
   if (changes.findings) {
     const newLength = changes.findings.newValue.length;
 
     if (newLength) {
-      chrome.action.setBadgeText({
+      browser.action.setBadgeText({
         text: `${newLength}`,
       });
-      chrome.action.setBadgeBackgroundColor({
+      browser.action.setBadgeBackgroundColor({
         color: "#cc3300",
       });
     } else {
-      chrome.action.setBadgeText({
+      browser.action.setBadgeText({
         text: "",
       });
     }
@@ -40,28 +41,27 @@ chrome.storage.local.onChanged.addListener((changes) => {
 
 function storeFinding(finding: Finding) {
   storageMutex.runExclusive(async () => {
-    chrome.storage.local.get("findings", (items) => {
-      const findings = items.findings || [];
-      findings.push(finding);
-      chrome.storage.local.set({ findings });
-    });
+    const items = await browser.storage.local.get("findings");
+    const findings = items.findings || [];
+    findings.push(finding);
+    await browser.storage.local.set({ findings });
   });
 }
 
 function updateCurrentTab() {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     if (tabs.length > 0) {
       currentTab = tabs[0];
     }
   });
 }
 
-chrome.tabs.onActivated.addListener(updateCurrentTab);
-chrome.tabs.onUpdated.addListener(updateCurrentTab);
+browser.tabs.onActivated.addListener(updateCurrentTab);
+browser.tabs.onUpdated.addListener(updateCurrentTab);
 
-chrome.webNavigation.onCommitted.addListener((details) => {
+browser.webNavigation.onCommitted.addListener((details) => {
   if (details.frameId === 0 && currentSettings.display.clearOnRefresh) {
-    chrome.storage.local.set({ findings: [] });
+    browser.storage.local.set({ findings: [] });
   }
 });
 
@@ -77,9 +77,9 @@ updateCurrentTab();
 //   });
 // }
 
-chrome.webRequest.onBeforeRequest.addListener(
+browser.webRequest.onBeforeRequest.addListener(
   (details) => {
-    if (!details.initiator) {
+    if (!details.initiator && !details.originUrl) {
       return;
     }
 
