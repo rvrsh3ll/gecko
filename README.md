@@ -1,6 +1,6 @@
 # Gecko 🦎
 
-Gecko is a powerful Chrome extension designed to automate the discovery of Client-Side Path Traversals (CSPT) in web applications. It seamlessly integrates with Chrome DevTools and provides a user-friendly interface for identifying and analyzing CSPT vulnerabilities.
+Gecko is a powerful cross-browser extension designed to automate the discovery of Client-Side Path Traversals (CSPT) in web applications. It seamlessly integrates with DevTools and provides a user-friendly interface for identifying and analyzing CSPT vulnerabilities.
 
 ![](docs/assets/printscreen.png)
 
@@ -56,12 +56,12 @@ The extension should now be loaded and visible in the Chrome toolbar.
 
 1. **View Findings in DevTools:**
 
-   - Open Chrome DevTools.
+   - Open DevTools.
    - Go to the `Gecko` panel to see a detailed list of findings and potential vulnerabilities.
 
 2. **Configure Settings:**
 
-   - Click on the Gecko extension icon in the Chrome toolbar to open the settings popup.
+   - Click on the Gecko extension icon in the extensions toolbar to open the settings popup.
    - Adjust the configuration options as needed.
 
 3. **Monitor Findings:**
