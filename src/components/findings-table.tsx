@@ -19,13 +19,10 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
 
   const fetchFindings = () => {
     browser.storage.local.get("findings").then((data) => {
-      if (!data.findings || !Array.isArray(data.findings)) {
-        throw new Error("data.findings must be an array of Finding");
-      }
+      data.findings = data.findings || [];
       const findingsData = data as { findings: Finding[] };
 
-      const uiFindings: FindingUI[] = data.findings
-        ? findingsData.findings
+      const uiFindings: FindingUI[] = findingsData.findings
             .reverse()
             .map((finding: Finding, index: number) => {
               return {
@@ -34,8 +31,7 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
                 croppedSourceUrl: removeProtocol(finding.source.url),
                 croppedTargetUrl: removeProtocol(finding.target.url),
               };
-            })
-        : [];
+        });
       setFindings(uiFindings);
     });
   };
