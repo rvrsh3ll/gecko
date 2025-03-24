@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Finding, FindingUI } from "../shared/types";
 import "../tailwind/styles.css";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import browser from "webextension-polyfill";
 
 interface FindingsTableProps {
   onRowClick: (finding: FindingUI) => void;
@@ -12,12 +13,12 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
   const [findings, setFindings] = useState<FindingUI[]>([]);
 
   const clearFindings = () => {
-    chrome.storage.local.set({ findings: [] });
+    browser.storage.local.set({ findings: [] });
     setFindings([]);
   };
 
   const fetchFindings = () => {
-    chrome.storage.local.get("findings", (data) => {
+    browser.storage.local.get("findings").then((data) => {
       const uiFindings: FindingUI[] = data.findings
         ? data.findings.reverse().map((finding: Finding, index: number) => {
             return {
@@ -40,7 +41,7 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
     fetchFindings();
   }, []);
 
-  chrome.storage.local.onChanged.addListener((changes) => {
+  browser.storage.local.onChanged.addListener((changes) => {
     if (changes.findings) {
       fetchFindings();
     }
