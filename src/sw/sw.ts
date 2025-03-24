@@ -42,7 +42,9 @@ browser.storage.local.onChanged.addListener((changes) => {
 function storeFinding(finding: Finding) {
   storageMutex.runExclusive(async () => {
     const items = await browser.storage.local.get("findings");
-    const findings: Finding[] = Array.isArray(items.findings) ? items.findings : [];
+    const findings: Finding[] = Array.isArray(items.findings)
+      ? items.findings
+      : [];
     findings.push(finding);
     await browser.storage.local.set({ findings });
   });
