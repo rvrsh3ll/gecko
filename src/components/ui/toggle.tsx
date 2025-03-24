@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Description, Field, Label, Switch } from "@headlessui/react";
+import React from "react";
+import { Field, Label, Switch } from "@headlessui/react";
 
 interface ToggleProps {
   label: string;
