@@ -79,3 +79,7 @@ We welcome contributions from the community! If you'd like to contribute, please
 3. Make your changes and commit them (`git commit -m 'Add some feature'`).
 4. Push to the branch (`git push origin feature/your-feature-name`).
 5. Open a pull request.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=vitorfhc/gecko&type=Date)](https://www.star-history.com/#vitorfhc/gecko&Date)
