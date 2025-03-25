@@ -5,6 +5,7 @@ import "../tailwind/styles.css";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useFindings } from "./findings-context";
 import FindingsSearch from "./findings-search";
+import HighlightedText from "./ui/highlithed-text";
 
 interface FindingsTableProps {
   onRowClick: (finding: FindingUI) => void;
@@ -76,13 +77,19 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
                         <dl>
                           <dt className="text-gray-500 text-xs">Source</dt>
                           <dd className="text-sm text-gray-800 truncate">
-                            {finding.croppedSourceUrl}
+                            <HighlightedText
+                              text={finding.croppedSourceUrl}
+                              search={finding.finding.source.value}
+                            />
                           </dd>
                         </dl>
                         <dl>
                           <dt className="text-gray-500 text-xs">Target</dt>
                           <dd className="text-sm text-gray-800 truncate">
-                            {finding.croppedTargetUrl}
+                            <HighlightedText
+                              text={finding.croppedTargetUrl}
+                              search={finding.finding.source.value}
+                            />
                           </dd>
                         </dl>
                       </td>

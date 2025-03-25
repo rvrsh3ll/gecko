@@ -1,5 +1,6 @@
 import React from "react";
 import { FindingUI } from "../shared/types";
+import HighlightedText from "./ui/highlithed-text";
 
 export default function FindingDataDisplay({
   finding,
@@ -33,7 +34,10 @@ export default function FindingDataDisplay({
               Source URL
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {finding.finding.source.url}
+              <HighlightedText
+                text={finding.croppedSourceUrl}
+                search={finding.finding.source.value}
+              />
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -41,7 +45,10 @@ export default function FindingDataDisplay({
               Target URL
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {finding.finding.target.url}
+              <HighlightedText
+                text={finding.finding.target.url}
+                search={finding.finding.source.value}
+              />
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
