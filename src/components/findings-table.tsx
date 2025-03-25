@@ -3,37 +3,29 @@ import { useState } from "react";
 import { Finding, FindingUI } from "../shared/types";
 import "../tailwind/styles.css";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import browser from "webextension-polyfill";
+import SearchBar from "./ui/search-bar";
+import { useFindings } from "./findings-context";
 
 interface FindingsTableProps {
   onRowClick: (finding: FindingUI) => void;
 }
 
 export default function FindingsTable({ onRowClick }: FindingsTableProps) {
-  const [findings, setFindings] = useState<FindingUI[]>([]);
+  const [visibleFindings, setVisibleFindings] = useState<FindingUI[]>([]);
+  const { findings, clearFindings, setSearch } = useFindings();
 
-  const clearFindings = () => {
-    browser.storage.local.set({ findings: [] });
-    setFindings([]);
-  };
-
-  const fetchFindings = () => {
-    browser.storage.local.get("findings").then((data) => {
-      data.findings = data.findings || [];
-      const findingsData = data as { findings: Finding[] };
-
-      const uiFindings: FindingUI[] = findingsData.findings
-            .reverse()
-            .map((finding: Finding, index: number) => {
-              return {
-                index: findingsData.findings.length - index,
-                finding: finding,
-                croppedSourceUrl: removeProtocol(finding.source.url),
-                croppedTargetUrl: removeProtocol(finding.target.url),
-              };
-        });
-      setFindings(uiFindings);
-    });
+  const refreshUIFindings = () => {
+    const uiFindings: FindingUI[] = findings
+      .reverse()
+      .map((finding: Finding, index: number) => {
+        return {
+          index: findings.length - index,
+          finding: finding,
+          croppedSourceUrl: removeProtocol(finding.source.url),
+          croppedTargetUrl: removeProtocol(finding.target.url),
+        };
+      });
+    setVisibleFindings(uiFindings);
   };
 
   const removeProtocol = (url: string) => {
@@ -41,14 +33,8 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
   };
 
   useEffect(() => {
-    fetchFindings();
-  }, []);
-
-  browser.storage.local.onChanged.addListener((changes) => {
-    if (changes.findings) {
-      fetchFindings();
-    }
-  });
+    refreshUIFindings();
+  }, [findings]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -71,13 +57,14 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
           </button>
         </div>
       </div>
-      <div className="mt-8 flow-root">
+      <SearchBar placeholder="Search values" onChange={setSearch} />
+      <div className="mt-4 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300 cursor-pointer table-fixed">
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {findings.map((finding) => (
+                  {visibleFindings.map((finding) => (
                     <tr
                       key={finding.index}
                       className="hover:bg-gray-50"

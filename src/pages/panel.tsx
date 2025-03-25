@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import FindingsTable from "../components/findings-table";
 import FindingDrawer from "../components/finding-drawer";
 import { FindingUI } from "../shared/types";
+import { FindingsProvider } from "../components/findings-context";
 
 const Panel = () => {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
@@ -20,12 +21,14 @@ const Panel = () => {
 
   return (
     <div className="pt-4 pb-8">
-      <FindingsTable onRowClick={handleRowClick} />
-      <FindingDrawer
-        open={isDrawerOpen}
-        finding={selectedFinding}
-        onClose={handleCloseDrawer}
-      />
+      <FindingsProvider>
+        <FindingsTable onRowClick={handleRowClick} />
+        <FindingDrawer
+          open={isDrawerOpen}
+          finding={selectedFinding}
+          onClose={handleCloseDrawer}
+        />
+      </FindingsProvider>
     </div>
   );
 };
