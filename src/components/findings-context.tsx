@@ -12,10 +12,10 @@ interface FindingsContextType {
 
 const FindingsContext = createContext<FindingsContextType>({
   findings: [],
-  clearFindings: () => {},
-  refreshFindings: () => {},
+  clearFindings: () => { },
+  refreshFindings: () => { },
   search: "",
-  setSearch: () => {},
+  setSearch: () => { },
 });
 
 export const FindingsProvider = ({
@@ -54,7 +54,7 @@ export const FindingsProvider = ({
     if (search) {
       setFilteredFindings(
         rawFindings.filter((finding) =>
-          finding.source.value.includes(sanitizedSearch),
+          finding.source.value.toLowerCase().includes(sanitizedSearch),
         ),
       );
     } else {
