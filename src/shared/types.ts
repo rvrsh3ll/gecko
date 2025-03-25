@@ -46,4 +46,10 @@ interface Settings {
   };
 }
 
-export { SourceType, Source, Finding, FindingUI, Settings };
+interface Search {
+  value: string;
+  source: string;
+  target: string;
+}
+
+export { SourceType, Source, Finding, FindingUI, Settings, Search };

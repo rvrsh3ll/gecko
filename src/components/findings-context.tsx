@@ -1,21 +1,21 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import { Finding } from "../shared/types";
+import { Finding, Search } from "../shared/types";
 
 interface FindingsContextType {
   findings: Finding[];
   clearFindings: () => void;
   refreshFindings: () => void;
-  search: string;
-  setSearch: (search: string) => void;
+  search: Search;
+  setSearch: (search: Search) => void;
 }
 
 const FindingsContext = createContext<FindingsContextType>({
   findings: [],
-  clearFindings: () => {},
-  refreshFindings: () => {},
-  search: "",
-  setSearch: () => {},
+  clearFindings: () => { },
+  refreshFindings: () => { },
+  search: { value: "", source: "", target: "" } as Search,
+  setSearch: () => { },
 });
 
 export const FindingsProvider = ({
@@ -25,7 +25,7 @@ export const FindingsProvider = ({
 }) => {
   const [rawFindings, setRawFindings] = useState<Finding[]>([]);
   const [filteredFindings, setFilteredFindings] = useState<Finding[]>([]);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<Search>({ value: "", source: "", target: "" });
 
   const fetchFindings = () => {
     browser.storage.local.get("findings").then((data) => {
@@ -50,16 +50,36 @@ export const FindingsProvider = ({
   }, []);
 
   useEffect(() => {
-    let sanitizedSearch = search.toLowerCase().trim();
-    if (search) {
-      setFilteredFindings(
-        rawFindings.filter((finding) =>
-          finding.source.value.toLowerCase().includes(sanitizedSearch),
-        ),
-      );
-    } else {
+    let valueSearch = search.value.toLowerCase().trim();
+    let targetSearch = search.target.toLowerCase().trim();
+    let sourceSearch = search.source.toLowerCase().trim();
+
+    if (!valueSearch && !targetSearch && !sourceSearch) {
       setFilteredFindings(rawFindings);
+      return;
     }
+
+    let filtered = rawFindings.filter((finding) => {
+      let source = finding.source.url.toLowerCase();
+      let target = finding.target.url.toLowerCase();
+      let value = finding.source.value.toLowerCase();
+
+      if (valueSearch && !value.includes(valueSearch)) {
+        return false;
+      }
+
+      if (sourceSearch && !source.includes(sourceSearch)) {
+        return false;
+      }
+
+      if (targetSearch && !target.includes(targetSearch)) {
+        return false;
+      }
+
+      return true;
+    });
+
+    setFilteredFindings(filtered);
   }, [search, rawFindings]);
 
   return (

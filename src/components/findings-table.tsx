@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Finding, FindingUI } from "../shared/types";
 import "../tailwind/styles.css";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import SearchBar from "./ui/search-bar";
 import { useFindings } from "./findings-context";
+import FindingsSearch from "./findings-search";
 
 interface FindingsTableProps {
   onRowClick: (finding: FindingUI) => void;
@@ -38,7 +38,7 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
+      <div className="sm:flex sm:items-center mb-2">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6 text-gray-900">
             Findings
@@ -47,14 +47,14 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
         <div className="mt-2 sm:ml-2 sm:mt-0 sm:flex-none">
           <button
             type="button"
-            className="max-w-40 min-w-40 block rounded-md bg-danger px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-danger-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger-dark"
+            className="max-w-35 min-w-35 block rounded-md bg-danger px-2 py-2 text-center text-xs font-semibold text-white shadow-sm hover:bg-danger-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger-dark"
             onClick={clearFindings}
           >
             Clear findings
           </button>
         </div>
       </div>
-      <SearchBar placeholder="Search values" onChange={setSearch} />
+      <FindingsSearch />
       <div className="mt-4 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
