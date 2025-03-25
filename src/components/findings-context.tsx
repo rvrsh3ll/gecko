@@ -12,10 +12,10 @@ interface FindingsContextType {
 
 const FindingsContext = createContext<FindingsContextType>({
   findings: [],
-  clearFindings: () => { },
-  refreshFindings: () => { },
+  clearFindings: () => {},
+  refreshFindings: () => {},
   search: "",
-  setSearch: () => { },
+  setSearch: () => {},
 });
 
 export const FindingsProvider = ({
