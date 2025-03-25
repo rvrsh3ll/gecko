@@ -43,9 +43,6 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
           <h1 className="text-base font-semibold leading-6 text-gray-900">
             Findings
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all findings the extension has detected.
-          </p>
         </div>
         <div className="mt-2 sm:ml-2 sm:mt-0 sm:flex-none">
           <button
