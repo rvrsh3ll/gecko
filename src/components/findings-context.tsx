@@ -58,30 +58,28 @@ export const FindingsProvider = ({
     let targetSearch = search.target.toLowerCase().trim();
     let sourceSearch = search.source.toLowerCase().trim();
 
-    if (!valueSearch && !targetSearch && !sourceSearch) {
-      setFilteredFindings(rawFindings);
-      return;
+    let filtered = rawFindings;
+    if (valueSearch || targetSearch || sourceSearch) {
+      filtered = rawFindings.filter((finding) => {
+        let source = finding.source.url.toLowerCase();
+        let target = finding.target.url.toLowerCase();
+        let value = finding.source.value.toLowerCase();
+
+        if (valueSearch && !value.includes(valueSearch)) {
+          return false;
+        }
+
+        if (sourceSearch && !source.includes(sourceSearch)) {
+          return false;
+        }
+
+        if (targetSearch && !target.includes(targetSearch)) {
+          return false;
+        }
+
+        return true;
+      });
     }
-
-    let filtered = rawFindings.filter((finding) => {
-      let source = finding.source.url.toLowerCase();
-      let target = finding.target.url.toLowerCase();
-      let value = finding.source.value.toLowerCase();
-
-      if (valueSearch && !value.includes(valueSearch)) {
-        return false;
-      }
-
-      if (sourceSearch && !source.includes(sourceSearch)) {
-        return false;
-      }
-
-      if (targetSearch && !target.includes(targetSearch)) {
-        return false;
-      }
-
-      return true;
-    });
 
     setFilteredFindings(filtered);
   }, [search, rawFindings]);

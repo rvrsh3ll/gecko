@@ -12,9 +12,13 @@ interface FindingsTableProps {
 
 export default function FindingsTable({ onRowClick }: FindingsTableProps) {
   const [visibleFindings, setVisibleFindings] = useState<FindingUI[]>([]);
-  const { findings, clearFindings, setSearch } = useFindings();
+  const { findings, clearFindings } = useFindings();
 
-  const refreshUIFindings = () => {
+  const removeProtocol = (url: string) => {
+    return url.replace("https://", "").replace("http://", "");
+  };
+
+  useEffect(() => {
     const uiFindings: FindingUI[] = findings
       .reverse()
       .map((finding: Finding, index: number) => {
@@ -26,14 +30,6 @@ export default function FindingsTable({ onRowClick }: FindingsTableProps) {
         };
       });
     setVisibleFindings(uiFindings);
-  };
-
-  const removeProtocol = (url: string) => {
-    return url.replace("https://", "").replace("http://", "");
-  };
-
-  useEffect(() => {
-    refreshUIFindings();
   }, [findings]);
 
   return (
