@@ -2,3 +2,4 @@
 /dist
 /.devcontainer
 /.github
+/public/manifest.json
