@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "build:prod": "webpack --mode production",
-    "watch": "webpack --watch"
+    "build:chrome": "rm -rf dist && cp public/manifest-chrome.json public/manifest.json && webpack --mode production",
+    "build:ff": "rm -rf dist && cp public/manifest-ff.json public/manifest.json && webpack --mode production",
+    "build:dev": "cp public/manifest-chrome.json public/manifest.json && webpack",
+    "watch:chrome": "rm -rf dist && cp public/manifest-chrome.json public/manifest.json && webpack --watch",
+    "watch:ff": "rm -rf dist && cp public/manifest-ff.json public/manifest.json && webpack --watch"
   },
   "keywords": [],
   "author": "Vitor Falcao <vitorfhcosta@gmail.com>",

@@ -38,7 +38,10 @@ Before you begin, ensure you have the following installed on your machine:
 3. Build the project:
 
    ```bash
-   npm run build
+   # Chrome
+   npm run build:chrome
+   # Firefox
+   npm run build:ff
    ```
 
 4. The build process will create a `dist` folder containing all the necessary files for the extension.
