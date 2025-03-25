@@ -22,7 +22,7 @@ export default function HighlightedText({
           </span>
         ) : (
           part
-        )
+        ),
       )}
     </span>
   );
