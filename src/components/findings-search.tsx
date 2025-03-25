@@ -8,11 +8,24 @@ export default function FindingsSearch() {
 
   return (
     <div>
-      <SearchInput placeholder="Search values" showIcon onChange={(value) => setSearch({ ...search, value })} />
+      <SearchInput
+        placeholder={advanced ? "canary value" : "search values"}
+        showIcon={!advanced}
+        label={advanced ? "value" : ""}
+        onChange={(value) => setSearch({ ...search, value })}
+      />
       {advanced && (
         <>
-          <SearchInput placeholder="github.com" onChange={(value) => setSearch({ ...search, source: value })} label="source" />
-          <SearchInput placeholder="api.github.com" onChange={(value) => setSearch({ ...search, target: value })} label="target" />
+          <SearchInput
+            placeholder="github.com"
+            onChange={(value) => setSearch({ ...search, source: value })}
+            label="source"
+          />
+          <SearchInput
+            placeholder="api.github.com"
+            onChange={(value) => setSearch({ ...search, target: value })}
+            label="target"
+          />
         </>
       )}
       <div className="mt-1 text-right">

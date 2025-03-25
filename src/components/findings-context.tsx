@@ -12,10 +12,10 @@ interface FindingsContextType {
 
 const FindingsContext = createContext<FindingsContextType>({
   findings: [],
-  clearFindings: () => { },
-  refreshFindings: () => { },
+  clearFindings: () => {},
+  refreshFindings: () => {},
   search: { value: "", source: "", target: "" } as Search,
-  setSearch: () => { },
+  setSearch: () => {},
 });
 
 export const FindingsProvider = ({
@@ -25,7 +25,11 @@ export const FindingsProvider = ({
 }) => {
   const [rawFindings, setRawFindings] = useState<Finding[]>([]);
   const [filteredFindings, setFilteredFindings] = useState<Finding[]>([]);
-  const [search, setSearch] = useState<Search>({ value: "", source: "", target: "" });
+  const [search, setSearch] = useState<Search>({
+    value: "",
+    source: "",
+    target: "",
+  });
 
   const fetchFindings = () => {
     browser.storage.local.get("findings").then((data) => {
