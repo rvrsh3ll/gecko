@@ -1,5 +1,5 @@
 import React from "react";
-import SearchBar from "./ui/search-bar";
+import SearchInput from "./ui/search-input";
 import { useFindings } from "./findings-context";
 
 export default function FindingsSearch() {
@@ -8,11 +8,11 @@ export default function FindingsSearch() {
 
   return (
     <div>
-      <SearchBar placeholder="Search values" showIcon onChange={(value) => setSearch({ ...search, value })} />
+      <SearchInput placeholder="Search values" showIcon onChange={(value) => setSearch({ ...search, value })} />
       {advanced && (
         <>
-          <SearchBar placeholder="github.com" onChange={(value) => setSearch({ ...search, source: value })} label="source" />
-          <SearchBar placeholder="api.github.com" onChange={(value) => setSearch({ ...search, target: value })} label="target" />
+          <SearchInput placeholder="github.com" onChange={(value) => setSearch({ ...search, source: value })} label="source" />
+          <SearchInput placeholder="api.github.com" onChange={(value) => setSearch({ ...search, target: value })} label="target" />
         </>
       )}
       <div className="mt-1 text-right">

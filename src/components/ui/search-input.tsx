@@ -8,7 +8,7 @@ interface ToggleProps {
   showIcon?: boolean;
 }
 
-export default function SearchBar({
+export default function SearchInput({
   placeholder,
   onChange,
   label,
