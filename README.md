@@ -2,6 +2,8 @@
 
 Gecko is a powerful cross-browser extension designed to automate the discovery of Client-Side Path Traversals (CSPT) in web applications. It seamlessly integrates with DevTools and provides a user-friendly interface for identifying and analyzing CSPT vulnerabilities.
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mngjkdkdahjibopfhpmnhidknebhfldn?label=Chrome%20Web%20Store&color=4285f4&style=for-the-badge)](https://chromewebstore.google.com/detail/gecko/mngjkdkdahjibopfhpmnhidknebhfldn)
+
 ![](docs/assets/printscreen.png)
 
 ## Features
@@ -13,14 +15,21 @@ Gecko is a powerful cross-browser extension designed to automate the discovery o
 
 ## Getting Started
 
-### Prerequisites
+### Installation
+
+#### Chrome Web Store (Recommended)
+The easiest way to install Gecko is through the [Chrome Web Store](https://chromewebstore.google.com/detail/gecko/mngjkdkdahjibopfhpmnhidknebhfldn).
+
+#### Manual Installation
+
+**Prerequisites**
 
 Before you begin, ensure you have the following installed on your machine:
 
 - [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 
-### Installation (Manual)
+**Steps**
 
 1. Clone the repository:
 
