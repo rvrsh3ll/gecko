@@ -153,7 +153,20 @@ function urlToSources(url: string): Source[] {
 
 function generateFindings(url: string, sources: Source[]): Finding[] {
   const findings: Finding[] = [];
-  const pathParts = new URL(url).pathname.split("/");
+
+  const u = new URL(url);
+  const pathParts = u.pathname.split("/");
+
+  const ignoredTargetOrigins = [
+    /adservice\.google\.com/,
+    /ad\.doubleclick\.net/,
+  ];
+
+  ignoredTargetOrigins.forEach((origin) => {
+    if (origin.test(u.hostname)) {
+      return;
+    }
+  });
 
   sources.forEach((source) => {
     pathParts.forEach((part) => {
