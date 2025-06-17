@@ -18,6 +18,7 @@ Gecko is a powerful cross-browser extension designed to automate the discovery o
 ### Installation
 
 #### Chrome Web Store (Recommended)
+
 The easiest way to install Gecko is through the [Chrome Web Store](https://chromewebstore.google.com/detail/gecko/mngjkdkdahjibopfhpmnhidknebhfldn).
 
 #### Manual Installation
