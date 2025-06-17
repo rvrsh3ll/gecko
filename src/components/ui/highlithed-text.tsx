@@ -14,14 +14,14 @@ export default function HighlightedText({
   }
 
   // Check if the text contains a slash (likely a URL)
-  const slashIndex = text.indexOf('/');
+  const slashIndex = text.indexOf("/");
   if (slashIndex !== -1) {
     const beforeSlash = text.substring(0, slashIndex + 1); // Include the slash
     const afterSlash = text.substring(slashIndex + 1);
-    
+
     // Only search in the part after the first slash
     const parts = afterSlash.split(new RegExp(`(${search})`, "gi"));
-    
+
     return (
       <span>
         <span>{beforeSlash}</span>
