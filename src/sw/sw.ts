@@ -20,6 +20,12 @@ browser.storage.local.onChanged.addListener((changes) => {
   if (changes.findings) {
     const newLength = (changes.findings.newValue as any[]).length;
 
+    if (newLength === 0) {
+      storageMutex.runExclusive(async () => {
+        await browser.storage.local.set({ findingsCache: {} });
+      });
+    }
+
     if (newLength) {
       browser.action.setBadgeText({
         text: `${newLength}`,
@@ -39,14 +45,30 @@ browser.storage.local.onChanged.addListener((changes) => {
   }
 });
 
+function generateCacheKey(finding: Finding): string {
+  const { source, target } = finding;
+  return `${source.type}-${source.url}-${source.value}-${target.url}`;
+}
+
 function storeFinding(finding: Finding) {
   storageMutex.runExclusive(async () => {
-    const items = await browser.storage.local.get("findings");
+    const items = await browser.storage.local.get([
+      "findings",
+      "findingsCache",
+    ]);
+
+    const cache = (items.findingsCache as Record<string, boolean>) || {};
+    const cacheKey = generateCacheKey(finding);
+    if (cache[cacheKey]) {
+      return;
+    }
+    cache[cacheKey] = true;
+
     const findings: Finding[] = Array.isArray(items.findings)
       ? items.findings
       : [];
     findings.push(finding);
-    await browser.storage.local.set({ findings });
+    await browser.storage.local.set({ findings, findingsCache: cache });
   });
 }
 
