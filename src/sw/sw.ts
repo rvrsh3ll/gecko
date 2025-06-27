@@ -47,7 +47,7 @@ browser.storage.local.onChanged.addListener((changes) => {
 
 function generateCacheKey(finding: Finding): string {
   const { source, target } = finding;
-  return `${source.type}-${source.url}-${source.value}-${target.url}`;
+  return `${source.url}-${source.value}-${target.url}`;
 }
 
 function storeFinding(finding: Finding) {
