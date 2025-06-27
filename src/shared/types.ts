@@ -1,8 +1,10 @@
 enum SourceType {
   QueryValue = "Query Parameter",
   QueryValueEncoded = "Query Parameter (URL encoded)",
+  QueryValueDecoded = "Query Parameter (URL decoded)",
   PathValue = "Path",
   PathValueEncoded = "Path (URL encoded)",
+  PathValueDecoded = "Path (URL decoded)",
   UndefinedValue = "Undefined Variable",
   NullValue = "Null Variable",
 }

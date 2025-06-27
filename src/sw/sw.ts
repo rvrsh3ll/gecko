@@ -123,6 +123,15 @@ function urlToSources(url: string): Source[] {
         value: v,
       });
 
+      const decoded = decodeURIComponent(v);
+      if (decoded !== v) {
+        sources.push({
+          type: SourceType.QueryValueDecoded,
+          url: url,
+          value: decoded,
+        });
+      }
+
       const encoded = encodeURIComponent(v);
       if (encoded !== v) {
         sources.push({
@@ -142,6 +151,15 @@ function urlToSources(url: string): Source[] {
         url: url,
         value: part,
       });
+
+      const decoded = decodeURIComponent(part);
+      if (decoded !== part) {
+        sources.push({
+          type: SourceType.PathValueDecoded,
+          url: url,
+          value: decoded,
+        });
+      }
 
       const encoded = encodeURIComponent(part);
       if (encoded !== part) {
