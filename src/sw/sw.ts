@@ -6,7 +6,7 @@ import { defaultSettings } from "../shared/constants";
 let currentTab: browser.Tabs.Tab | null = null;
 let storageMutex = new Mutex();
 
-const currentSettings: Settings = defaultSettings;
+const currentSettings: Settings = JSON.parse(JSON.stringify(defaultSettings));
 
 browser.storage.local.get("settings").then((items) => {
   if (!items.settings) {
@@ -17,7 +17,7 @@ browser.storage.local.get("settings").then((items) => {
 });
 
 browser.storage.local.onChanged.addListener((changes) => {
-  if (changes.findings) {
+  if (changes.findings && changes.findings.newValue) {
     const newLength = (changes.findings.newValue as any[]).length;
 
     if (newLength === 0) {
@@ -202,11 +202,13 @@ function generateFindings(url: string, sources: Source[]): Finding[] {
     /ad\.doubleclick\.net/,
   ];
 
-  ignoredTargetOrigins.forEach((origin) => {
-    if (origin.test(u.hostname)) {
-      return;
-    }
-  });
+  const isIgnored = ignoredTargetOrigins.some((origin) =>
+    origin.test(u.hostname),
+  );
+
+  if (isIgnored) {
+    return findings;
+  }
 
   sources.forEach((source) => {
     pathParts.forEach((part) => {
