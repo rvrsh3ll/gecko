@@ -54,28 +54,29 @@ export const FindingsProvider = ({
   }, []);
 
   useEffect(() => {
-    let valueSearch = search.value.toLowerCase().trim();
+    let valueSearch  = search.value.toLowerCase().trim();
     let targetSearch = search.target.toLowerCase().trim();
     let sourceSearch = search.source.toLowerCase().trim();
 
+    const checkTerms = (text:string, termString:string) => {
+      const terms = termString.split(/\s+/); // split by spaces
+      return terms.every(t => {
+        if (t.startsWith('-')) return !text.includes(t.slice(1)); // negative term
+        return text.includes(t); // positive term
+      });
+    };
+
     let filtered = rawFindings;
+
     if (valueSearch || targetSearch || sourceSearch) {
-      filtered = rawFindings.filter((finding) => {
-        let source = finding.source.url.toLowerCase();
-        let target = finding.target.url.toLowerCase();
-        let value = finding.source.value.toLowerCase();
+      filtered = rawFindings.filter(f => {
+        const source = f.source.url.toLowerCase();
+        const target = f.target.url.toLowerCase();
+        const value  = f.source.value.toLowerCase();
 
-        if (valueSearch && !value.includes(valueSearch)) {
-          return false;
-        }
-
-        if (sourceSearch && !source.includes(sourceSearch)) {
-          return false;
-        }
-
-        if (targetSearch && !target.includes(targetSearch)) {
-          return false;
-        }
+        if (valueSearch  && !checkTerms(value, valueSearch)) return false;
+        if (sourceSearch && !checkTerms(source, sourceSearch)) return false;
+        if (targetSearch && !checkTerms(target, targetSearch)) return false;
 
         return true;
       });
