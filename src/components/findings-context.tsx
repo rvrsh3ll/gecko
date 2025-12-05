@@ -46,37 +46,54 @@ export const FindingsProvider = ({
 
   useEffect(() => {
     fetchFindings();
-    browser.storage.local.onChanged.addListener((changes) => {
+    const listener = (
+      changes: browser.Storage.StorageAreaOnChangedChangesType,
+    ) => {
       if (changes.findings) {
         fetchFindings();
       }
-    });
+    };
+    browser.storage.local.onChanged.addListener(listener);
+    return () => {
+      browser.storage.local.onChanged.removeListener(listener);
+    };
   }, []);
 
   useEffect(() => {
-    let valueSearch  = search.value.toLowerCase().trim();
+    let valueSearch = search.value.toLowerCase().trim();
     let targetSearch = search.target.toLowerCase().trim();
     let sourceSearch = search.source.toLowerCase().trim();
 
-    const checkTerms = (text:string, termString:string) => {
-      const terms = termString.split(/\s+/); // split by spaces
-      return terms.every(t => {
-        if (t.startsWith('-')) return !text.includes(t.slice(1)); // negative term
-        return text.includes(t); // positive term
+    const valueTerms = valueSearch.split(/\s+/).filter((t) => t.length > 0);
+    const targetTerms = targetSearch.split(/\s+/).filter((t) => t.length > 0);
+    const sourceTerms = sourceSearch.split(/\s+/).filter((t) => t.length > 0);
+
+    const checkTerms = (text: string, terms: string[]) => {
+      return terms.every((t) => {
+        if (t.startsWith("-") && t.length > 1)
+          return !text.includes(t.slice(1));
+        return text.includes(t);
       });
     };
 
     let filtered = rawFindings;
 
-    if (valueSearch || targetSearch || sourceSearch) {
-      filtered = rawFindings.filter(f => {
+    if (
+      valueTerms.length > 0 ||
+      targetTerms.length > 0 ||
+      sourceTerms.length > 0
+    ) {
+      filtered = rawFindings.filter((f) => {
         const source = f.source.url.toLowerCase();
         const target = f.target.url.toLowerCase();
-        const value  = f.source.value.toLowerCase();
+        const value = f.source.value.toLowerCase();
 
-        if (valueSearch  && !checkTerms(value, valueSearch)) return false;
-        if (sourceSearch && !checkTerms(source, sourceSearch)) return false;
-        if (targetSearch && !checkTerms(target, targetSearch)) return false;
+        if (valueTerms.length > 0 && !checkTerms(value, valueTerms))
+          return false;
+        if (sourceTerms.length > 0 && !checkTerms(source, sourceTerms))
+          return false;
+        if (targetTerms.length > 0 && !checkTerms(target, targetTerms))
+          return false;
 
         return true;
       });
