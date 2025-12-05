@@ -1,11 +1,13 @@
 import React from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
-interface ToggleProps {
+interface SearchInputProps {
   placeholder: string;
   onChange: (search: string) => void;
   label?: string;
   showIcon?: boolean;
+  value?: string;
+  id?: string;
 }
 
 export default function SearchInput({
@@ -13,7 +15,9 @@ export default function SearchInput({
   onChange,
   label,
   showIcon,
-}: ToggleProps) {
+  value,
+  id,
+}: SearchInputProps) {
   label = label ? label.trim() : "";
   showIcon = showIcon ? showIcon : false;
 
@@ -26,13 +30,14 @@ export default function SearchInput({
       )}
       <div className="grid grid-cols-1">
         <input
-          id="search"
-          name="search"
+          id={id || "search"}
+          name={id || "search"}
           type="search"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
+          value={value}
           onChange={(e) => {
             onChange(e.target.value);
           }}
