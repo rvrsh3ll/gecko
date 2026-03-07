@@ -6,7 +6,7 @@ import { defaultSettings } from "../shared/constants";
 let currentTab: browser.Tabs.Tab | null = null;
 let storageMutex = new Mutex();
 
-const currentSettings: Settings = defaultSettings;
+const currentSettings: Settings = JSON.parse(JSON.stringify(defaultSettings));
 
 browser.storage.local.get("settings").then((items) => {
   if (!items.settings) {
@@ -17,7 +17,7 @@ browser.storage.local.get("settings").then((items) => {
 });
 
 browser.storage.local.onChanged.addListener((changes) => {
-  if (changes.findings) {
+  if (changes.findings && changes.findings.newValue) {
     const newLength = (changes.findings.newValue as any[]).length;
 
     if (newLength === 0) {
@@ -47,7 +47,7 @@ browser.storage.local.onChanged.addListener((changes) => {
 
 function generateCacheKey(finding: Finding): string {
   const { source, target } = finding;
-  return `${source.type}-${source.url}-${source.value}-${target.url}`;
+  return `${source.url}-${source.value}-${target.url}`;
 }
 
 function storeFinding(finding: Finding) {
@@ -123,6 +123,15 @@ function urlToSources(url: string): Source[] {
         value: v,
       });
 
+      const decoded = decodeURIComponent(v);
+      if (decoded !== v) {
+        sources.push({
+          type: SourceType.QueryValueDecoded,
+          url: url,
+          value: decoded,
+        });
+      }
+
       const encoded = encodeURIComponent(v);
       if (encoded !== v) {
         sources.push({
@@ -142,6 +151,15 @@ function urlToSources(url: string): Source[] {
         url: url,
         value: part,
       });
+
+      const decoded = decodeURIComponent(part);
+      if (decoded !== part) {
+        sources.push({
+          type: SourceType.PathValueDecoded,
+          url: url,
+          value: decoded,
+        });
+      }
 
       const encoded = encodeURIComponent(part);
       if (encoded !== part) {
@@ -184,11 +202,13 @@ function generateFindings(url: string, sources: Source[]): Finding[] {
     /ad\.doubleclick\.net/,
   ];
 
-  ignoredTargetOrigins.forEach((origin) => {
-    if (origin.test(u.hostname)) {
-      return;
-    }
-  });
+  const isIgnored = ignoredTargetOrigins.some((origin) =>
+    origin.test(u.hostname),
+  );
+
+  if (isIgnored) {
+    return findings;
+  }
 
   sources.forEach((source) => {
     pathParts.forEach((part) => {

@@ -46,11 +46,17 @@ export const FindingsProvider = ({
 
   useEffect(() => {
     fetchFindings();
-    browser.storage.local.onChanged.addListener((changes) => {
+    const listener = (
+      changes: browser.Storage.StorageAreaOnChangedChangesType,
+    ) => {
       if (changes.findings) {
         fetchFindings();
       }
-    });
+    };
+    browser.storage.local.onChanged.addListener(listener);
+    return () => {
+      browser.storage.local.onChanged.removeListener(listener);
+    };
   }, []);
 
   useEffect(() => {
@@ -58,24 +64,36 @@ export const FindingsProvider = ({
     let targetSearch = search.target.toLowerCase().trim();
     let sourceSearch = search.source.toLowerCase().trim();
 
+    const valueTerms = valueSearch.split(/\s+/).filter((t) => t.length > 0);
+    const targetTerms = targetSearch.split(/\s+/).filter((t) => t.length > 0);
+    const sourceTerms = sourceSearch.split(/\s+/).filter((t) => t.length > 0);
+
+    const checkTerms = (text: string, terms: string[]) => {
+      return terms.every((t) => {
+        if (t.startsWith("-") && t.length > 1)
+          return !text.includes(t.slice(1));
+        return text.includes(t);
+      });
+    };
+
     let filtered = rawFindings;
-    if (valueSearch || targetSearch || sourceSearch) {
-      filtered = rawFindings.filter((finding) => {
-        let source = finding.source.url.toLowerCase();
-        let target = finding.target.url.toLowerCase();
-        let value = finding.source.value.toLowerCase();
 
-        if (valueSearch && !value.includes(valueSearch)) {
-          return false;
-        }
+    if (
+      valueTerms.length > 0 ||
+      targetTerms.length > 0 ||
+      sourceTerms.length > 0
+    ) {
+      filtered = rawFindings.filter((f) => {
+        const source = f.source.url.toLowerCase();
+        const target = f.target.url.toLowerCase();
+        const value = f.source.value.toLowerCase();
 
-        if (sourceSearch && !source.includes(sourceSearch)) {
+        if (valueTerms.length > 0 && !checkTerms(value, valueTerms))
           return false;
-        }
-
-        if (targetSearch && !target.includes(targetSearch)) {
+        if (sourceTerms.length > 0 && !checkTerms(source, sourceTerms))
           return false;
-        }
+        if (targetTerms.length > 0 && !checkTerms(target, targetTerms))
+          return false;
 
         return true;
       });
