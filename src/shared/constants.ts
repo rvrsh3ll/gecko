@@ -14,6 +14,9 @@ const defaultSettings: Settings = {
   display: {
     clearOnRefresh: false,
   },
+  filters: {
+    ignorePatterns: [],
+  },
 };
 
 export { defaultSettings };
