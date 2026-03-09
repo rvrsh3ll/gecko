@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import { Finding, Search } from "../shared/types";
+import { Finding, Search, Settings } from "../shared/types";
+import { defaultSettings } from "../shared/constants";
 
 interface FindingsContextType {
   findings: Finding[];
@@ -30,6 +31,24 @@ export const FindingsProvider = ({
     source: "",
     target: "",
   });
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+
+  useEffect(() => {
+    browser.storage.local.get("settings").then((items) => {
+      if (items.settings) setSettings(items.settings);
+    });
+    const listener = (
+      changes: browser.Storage.StorageAreaOnChangedChangesType,
+    ) => {
+      if (changes.settings) {
+        setSettings(changes.settings.newValue);
+      }
+    };
+    browser.storage.local.onChanged.addListener(listener);
+    return () => {
+      browser.storage.local.onChanged.removeListener(listener);
+    };
+  }, []);
 
   const fetchFindings = () => {
     browser.storage.local.get("findings").then((data) => {
@@ -60,6 +79,10 @@ export const FindingsProvider = ({
   }, []);
 
   useEffect(() => {
+    const activePatterns = (settings.filters?.ignorePatterns ?? [])
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+
     let valueSearch = search.value.toLowerCase().trim();
     let targetSearch = search.target.toLowerCase().trim();
     let sourceSearch = search.source.toLowerCase().trim();
@@ -78,12 +101,31 @@ export const FindingsProvider = ({
 
     let filtered = rawFindings;
 
+    if (activePatterns.length > 0) {
+      filtered = filtered.filter((f) => {
+        const targetPath = (() => {
+          try {
+            return new URL(f.target.url).pathname;
+          } catch {
+            return f.target.url;
+          }
+        })();
+        return !activePatterns.some((pattern) => {
+          try {
+            return new RegExp(pattern).test(targetPath);
+          } catch {
+            return false;
+          }
+        });
+      });
+    }
+
     if (
       valueTerms.length > 0 ||
       targetTerms.length > 0 ||
       sourceTerms.length > 0
     ) {
-      filtered = rawFindings.filter((f) => {
+      filtered = filtered.filter((f) => {
         const source = f.source.url.toLowerCase();
         const target = f.target.url.toLowerCase();
         const value = f.source.value.toLowerCase();
@@ -100,7 +142,7 @@ export const FindingsProvider = ({
     }
 
     setFilteredFindings(filtered);
-  }, [search, rawFindings]);
+  }, [search, rawFindings, settings]);
 
   return (
     <FindingsContext.Provider

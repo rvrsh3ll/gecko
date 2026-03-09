@@ -46,6 +46,9 @@ interface Settings {
   display: {
     clearOnRefresh: boolean;
   };
+  filters: {
+    ignorePatterns: string[];
+  };
 }
 
 interface Search {

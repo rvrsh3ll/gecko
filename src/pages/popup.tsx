@@ -132,6 +132,30 @@ export default function Popup() {
         />
       </div>
       <hr className="my-4" />
+      <div>
+        <label className="block text-sm font-medium text-gray-900 mb-1">
+          Ignore Patterns
+        </label>
+        <p className="text-xs text-gray-500 mb-2">
+          One regex per line. Findings whose target path matches any pattern
+          will be hidden.
+        </p>
+        <textarea
+          className="w-full p-2 text-sm font-mono border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200 resize-y"
+          rows={4}
+          placeholder={"/stealth\n/health-check"}
+          value={settings.filters.ignorePatterns.join("\n")}
+          onChange={(e) => {
+            setSettings({
+              ...settings,
+              filters: {
+                ignorePatterns: e.target.value.split("\n"),
+              },
+            });
+          }}
+        />
+      </div>
+      <hr className="my-4" />
       <InfoAlert message="Open the DevTools Gecko panel to see the findings." />
     </div>
   );
