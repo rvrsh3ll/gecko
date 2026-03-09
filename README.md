@@ -45,13 +45,24 @@ Before you begin, ensure you have the following installed on your machine:
    npm install
    ```
 
-3. Build the project:
+3. Build the project using one of the following options:
 
+   - **Option A**: Using npm (Local)
+   
    ```bash
    # Chrome
    npm run build:chrome
    # Firefox
    npm run build:ff
+   ```
+   
+   - **Option B**: Using Docker
+   ```bash
+   # Build for Chrome
+   ./build-docker.sh chrome
+   
+   # Build for Firefox
+   ./build-docker.sh ff
    ```
 
 4. The build process will create a `dist` folder containing all the necessary files for the extension.
