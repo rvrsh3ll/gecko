@@ -13,6 +13,8 @@ export default function HighlightedText({
     return <span>{text}</span>;
   }
 
+  const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
   // Check if the text contains a slash (likely a URL)
   const slashIndex = text.indexOf("/");
   if (slashIndex !== -1) {
@@ -20,7 +22,7 @@ export default function HighlightedText({
     const afterSlash = text.substring(slashIndex + 1);
 
     // Only search in the part after the first slash
-    const parts = afterSlash.split(new RegExp(`(${search})`, "gi"));
+    const parts = afterSlash.split(new RegExp(`(${escapedSearch})`, "gi"));
 
     return (
       <span>
@@ -39,7 +41,7 @@ export default function HighlightedText({
   }
 
   // Original behavior for text without slashes
-  const parts = text.split(new RegExp(`(${search})`, "gi"));
+  const parts = text.split(new RegExp(`(${escapedSearch})`, "gi"));
   return (
     <span>
       {parts.map((part, index) =>
